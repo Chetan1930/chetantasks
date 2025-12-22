@@ -58,17 +58,19 @@ export default function Dashboard() {
       
       <Header />
       
-      <main className="container mx-auto px-4 py-8 max-w-5xl flex-1 relative">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 animate-fade-in">
-          <div>
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">My Tasks</h2>
-            <p className="text-muted-foreground mt-1">
-              Organize and track your personal goals
-            </p>
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-5xl flex-1 relative">
+        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 animate-fade-in">
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground tracking-tight">My Tasks</h2>
+              <p className="text-muted-foreground text-xs sm:text-base mt-0.5 sm:mt-1">
+                Organize and track your personal goals
+              </p>
+            </div>
+            <AddCategoryDialog
+              onAdd={(name, color, icon) => createCategory(name, color, icon)}
+            />
           </div>
-          <AddCategoryDialog
-            onAdd={(name, color, icon) => createCategory(name, color, icon)}
-          />
         </div>
 
         {categories.length > 0 && (
@@ -83,7 +85,7 @@ export default function Dashboard() {
             }}
           />
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
             {categories.map((category, index) => (
               <div
                 key={category.id}

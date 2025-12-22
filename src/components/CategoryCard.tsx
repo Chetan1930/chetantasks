@@ -117,7 +117,7 @@ export function CategoryCard({
   return (
     <Card className="glass-card overflow-hidden hover-lift animate-slide-up border-0">
       <CardHeader
-        className="p-4 cursor-pointer relative"
+        className="p-3 sm:p-4 cursor-pointer relative"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         {/* Color accent bar */}
@@ -126,21 +126,21 @@ export function CategoryCard({
           style={{ backgroundColor: category.color }}
         />
         
-        <div className="flex items-center justify-between pl-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between pl-2 sm:pl-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <div
-              className="p-2.5 rounded-xl shadow-sm"
+              className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl shadow-sm shrink-0"
               style={{ 
                 backgroundColor: `${category.color}15`,
                 boxShadow: `0 2px 8px ${category.color}20`
               }}
             >
-              <Icon className="w-5 h-5" style={{ color: category.color }} />
+              <Icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: category.color }} />
             </div>
-            <div>
-              <h3 className="font-semibold text-foreground">{category.name}</h3>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-foreground text-sm sm:text-base truncate">{category.name}</h3>
               <div className="flex items-center gap-2 mt-1">
-                <div className="h-1.5 w-20 rounded-full bg-secondary overflow-hidden">
+                <div className="h-1.5 w-16 sm:w-20 rounded-full bg-secondary overflow-hidden">
                   <div 
                     className="h-full rounded-full transition-all duration-500"
                     style={{ 
@@ -155,7 +155,7 @@ export function CategoryCard({
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                 <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-secondary">
@@ -187,9 +187,9 @@ export function CategoryCard({
       </CardHeader>
 
       {isExpanded && (
-        <CardContent className="p-4 pt-0 space-y-1">
+        <CardContent className="p-3 sm:p-4 pt-0 space-y-1">
           {parentTasks.length === 0 && !showAddTask && (
-            <p className="text-sm text-muted-foreground text-center py-4">
+            <p className="text-xs sm:text-sm text-muted-foreground text-center py-4">
               No tasks yet. Add your first task!
             </p>
           )}
@@ -206,15 +206,15 @@ export function CategoryCard({
               <div key={task.id} className="space-y-0.5">
                 <div
                   className={cn(
-                    'flex items-center gap-3 p-3 rounded-xl transition-all duration-200',
-                    'hover:bg-secondary/60 group',
+                    'flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl transition-all duration-200',
+                    'hover:bg-secondary/60 group active:bg-secondary/80',
                     task.is_completed && 'opacity-50'
                   )}
                 >
                   {hasSubtasks ? (
                     <button
                       onClick={() => toggleTaskExpand(task.id)}
-                      className="p-0.5 hover:bg-secondary rounded transition-colors"
+                      className="p-1 hover:bg-secondary rounded transition-colors touch-manipulation"
                     >
                       {isTaskExpanded ? (
                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
@@ -223,44 +223,44 @@ export function CategoryCard({
                       )}
                     </button>
                   ) : (
-                    <div className="w-5" />
+                    <div className="w-6" />
                   )}
                   <Checkbox
                     checked={task.is_completed}
                     onCheckedChange={(checked) =>
                       onToggleComplete(task.id, checked as boolean)
                     }
-                    className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    className="data-[state=checked]:bg-primary data-[state=checked]:border-primary h-5 w-5"
                   />
                   <span
                     className={cn(
-                      'flex-1 text-sm font-medium',
+                      'flex-1 text-xs sm:text-sm font-medium min-w-0 break-words',
                       task.is_completed && 'line-through text-muted-foreground'
                     )}
                   >
                     {task.title}
                   </span>
                   {subtaskProgress && (
-                    <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-muted-foreground bg-secondary px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">
                       {subtaskProgress}
                     </span>
                   )}
-                  <div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 transition-opacity">
+                  <div className="flex items-center gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7"
+                      className="h-8 w-8 sm:h-7 sm:w-7 touch-manipulation"
                       onClick={() => setAddingSubtaskFor(task.id)}
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      className="h-8 w-8 sm:h-7 sm:w-7 text-destructive hover:text-destructive hover:bg-destructive/10 touch-manipulation"
                       onClick={() => onDeleteTask(task.id)}
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                     </Button>
                   </div>
                 </div>
@@ -270,8 +270,8 @@ export function CategoryCard({
                   <div
                     key={subtask.id}
                     className={cn(
-                      'flex items-center gap-3 p-2.5 pl-14 rounded-xl transition-all duration-200',
-                      'hover:bg-secondary/40 group',
+                      'flex items-center gap-2 sm:gap-3 p-2 sm:p-2.5 pl-10 sm:pl-14 rounded-xl transition-all duration-200',
+                      'hover:bg-secondary/40 group active:bg-secondary/60',
                       subtask.is_completed && 'opacity-50'
                     )}
                   >
@@ -280,11 +280,11 @@ export function CategoryCard({
                       onCheckedChange={(checked) =>
                         onToggleComplete(subtask.id, checked as boolean)
                       }
-                      className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                      className="data-[state=checked]:bg-primary data-[state=checked]:border-primary h-5 w-5"
                     />
                     <span
                       className={cn(
-                        'flex-1 text-sm',
+                        'flex-1 text-xs sm:text-sm min-w-0 break-words',
                         subtask.is_completed && 'line-through text-muted-foreground'
                       )}
                     >
@@ -293,17 +293,17 @@ export function CategoryCard({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive hover:bg-destructive/10 transition-opacity"
+                      className="h-8 w-8 sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 text-destructive hover:text-destructive hover:bg-destructive/10 transition-opacity touch-manipulation shrink-0"
                       onClick={() => onDeleteTask(subtask.id)}
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                     </Button>
                   </div>
                 ))}
 
                 {/* Add subtask input */}
                 {addingSubtaskFor === task.id && (
-                  <div className="flex items-center gap-2 pl-14 pr-2 py-1">
+                  <div className="flex items-center gap-2 pl-10 sm:pl-14 pr-2 py-1">
                     <Input
                       placeholder="Add subtask..."
                       value={newSubtaskTitle}
@@ -350,7 +350,7 @@ export function CategoryCard({
             <Button
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/60 mt-2"
+              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/60 mt-2 h-10 touch-manipulation"
               onClick={() => setShowAddTask(true)}
             >
               <Plus className="w-4 h-4 mr-2" />

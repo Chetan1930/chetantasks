@@ -41,14 +41,14 @@ export function StatsBar({ tasks, categories, getSubtasks }: StatsBarProps) {
 
   const stats = [
     {
-      label: 'Total Tasks',
+      label: 'Total',
       value: totalUnits,
       icon: ListTodo,
       color: 'hsl(var(--primary))',
       bgColor: 'hsl(var(--primary) / 0.1)',
     },
     {
-      label: 'Completed',
+      label: 'Done',
       value: completedUnits,
       icon: CheckCircle2,
       color: 'hsl(142 71% 45%)',
@@ -73,19 +73,19 @@ export function StatsBar({ tasks, categories, getSubtasks }: StatsBarProps) {
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
       {stats.map((stat, index) => (
         <div
           key={stat.label}
-          className="glass-card rounded-2xl p-4 hover-lift animate-slide-up"
+          className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 hover-lift animate-slide-up"
           style={{ animationDelay: `${index * 50}ms` }}
         >
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+          <div className="flex items-center sm:items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 truncate">{stat.label}</p>
               {stat.showProgress && (
-                <div className="mt-3 progress-bar">
+                <div className="mt-2 sm:mt-3 progress-bar">
                   <div
                     className="progress-bar-fill"
                     style={{ width: `${stat.progress}%` }}
@@ -94,10 +94,10 @@ export function StatsBar({ tasks, categories, getSubtasks }: StatsBarProps) {
               )}
             </div>
             <div
-              className="p-2.5 rounded-xl shrink-0"
+              className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl shrink-0"
               style={{ backgroundColor: stat.bgColor }}
             >
-              <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+              <stat.icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: stat.color }} />
             </div>
           </div>
         </div>
