@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckSquare, Loader2 } from 'lucide-react';
+import { CheckSquare, Loader2, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -80,17 +80,34 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-      <div className="w-full max-w-md animate-fade-in">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="p-2 rounded-xl bg-primary">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
+      {/* Background effects */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 100% 100% at 50% 0%, hsl(var(--primary) / 0.15), transparent 50%)'
+        }}
+      />
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-1/2 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 50% at 50% 100%, hsl(var(--accent) / 0.1), transparent)'
+        }}
+      />
+
+      <div className="w-full max-w-md animate-scale-in relative">
+        <div className="flex flex-col items-center justify-center gap-3 mb-8">
+          <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/30">
             <CheckSquare className="w-8 h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">TaskFlow</h1>
+          <h1 className="text-3xl font-bold">
+            <span className="gradient-text">Chetan's</span>{' '}
+            <span className="text-foreground">TaskFlow</span>
+          </h1>
         </div>
 
-        <Card className="border-border/50 shadow-lg">
-          <CardHeader className="text-center">
+        <Card className="glass-card border-0">
+          <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl">
               {isLogin ? 'Welcome back' : 'Create account'}
             </CardTitle>
@@ -111,7 +128,7 @@ export default function Auth() {
                     placeholder="Your name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="h-11"
+                    className="h-11 bg-secondary/50 border-0"
                     required={!isLogin}
                   />
                 </div>
@@ -124,7 +141,7 @@ export default function Auth() {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-11"
+                  className="h-11 bg-secondary/50 border-0"
                   required
                 />
               </div>
@@ -136,17 +153,18 @@ export default function Auth() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-11"
+                  className="h-11 bg-secondary/50 border-0"
                   required
                 />
               </div>
-              <Button type="submit" className="w-full h-11" disabled={loading}>
+              <Button type="submit" className="w-full h-11 gap-2" disabled={loading}>
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
-                ) : isLogin ? (
-                  'Sign In'
                 ) : (
-                  'Create Account'
+                  <>
+                    {isLogin ? 'Sign In' : 'Create Account'}
+                    <ArrowRight className="w-4 h-4" />
+                  </>
                 )}
               </Button>
             </form>

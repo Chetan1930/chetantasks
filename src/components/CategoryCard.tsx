@@ -62,8 +62,29 @@ export function CategoryCard({
 
   const Icon = iconMap[category.icon] || Folder;
   const parentTasks = tasks.filter(t => !t.parent_task_id);
-  const completedCount = tasks.filter(t => t.is_completed).length;
-  const totalCount = tasks.length;
+
+  // Calculate progress based on weighted counting
+  const calculateProgress = () => {
+    let totalUnits = 0;
+    let completedUnits = 0;
+
+    parentTasks.forEach(parent => {
+      const subtasks = getSubtasks(parent.id);
+      
+      if (subtasks.length === 0) {
+        totalUnits += 1;
+        if (parent.is_completed) completedUnits += 1;
+      } else {
+        totalUnits += subtasks.length;
+        completedUnits += subtasks.filter(s => s.is_completed).length;
+      }
+    });
+
+    return { totalUnits, completedUnits };
+  };
+
+  const { totalUnits, completedUnits } = calculateProgress();
+  const progress = totalUnits > 0 ? Math.round((completedUnits / totalUnits) * 100) : 0;
 
   const handleAddTask = () => {
     if (newTaskTitle.trim()) {
@@ -94,76 +115,106 @@ export function CategoryCard({
   };
 
   return (
-    <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden animate-slide-up">
+    <Card className="glass-card overflow-hidden hover-lift animate-slide-up border-0">
       <CardHeader
-        className="p-4 cursor-pointer"
-        style={{ borderLeft: `4px solid ${category.color}` }}
+        className="p-4 cursor-pointer relative"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center justify-between">
+        {/* Color accent bar */}
+        <div 
+          className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+          style={{ backgroundColor: category.color }}
+        />
+        
+        <div className="flex items-center justify-between pl-3">
           <div className="flex items-center gap-3">
             <div
-              className="p-2 rounded-lg"
-              style={{ backgroundColor: `${category.color}20` }}
+              className="p-2.5 rounded-xl shadow-sm"
+              style={{ 
+                backgroundColor: `${category.color}15`,
+                boxShadow: `0 2px 8px ${category.color}20`
+              }}
             >
               <Icon className="w-5 h-5" style={{ color: category.color }} />
             </div>
             <div>
               <h3 className="font-semibold text-foreground">{category.name}</h3>
-              <p className="text-xs text-muted-foreground">
-                {completedCount}/{totalCount} completed
-              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="h-1.5 w-20 rounded-full bg-secondary overflow-hidden">
+                  <div 
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ 
+                      width: `${progress}%`,
+                      backgroundColor: category.color 
+                    }}
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {completedUnits}/{totalUnits}
+                </span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-secondary">
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="glass-card">
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleteCategory(category.id);
                   }}
-                  className="text-destructive"
+                  className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete category
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            {isExpanded ? (
-              <ChevronDown className="w-5 h-5 text-muted-foreground" />
-            ) : (
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            )}
+            <div className="p-1">
+              {isExpanded ? (
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              )}
+            </div>
           </div>
         </div>
       </CardHeader>
 
       {isExpanded && (
-        <CardContent className="p-4 pt-0 space-y-2">
+        <CardContent className="p-4 pt-0 space-y-1">
+          {parentTasks.length === 0 && !showAddTask && (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              No tasks yet. Add your first task!
+            </p>
+          )}
+
           {parentTasks.map((task) => {
             const subtasks = getSubtasks(task.id);
             const isTaskExpanded = expandedTasks.has(task.id);
             const hasSubtasks = subtasks.length > 0;
+            const subtaskProgress = hasSubtasks 
+              ? `${subtasks.filter(s => s.is_completed).length}/${subtasks.length}`
+              : null;
 
             return (
-              <div key={task.id} className="space-y-1">
+              <div key={task.id} className="space-y-0.5">
                 <div
                   className={cn(
-                    'flex items-center gap-3 p-3 rounded-lg transition-all duration-200',
-                    'hover:bg-secondary/50 group',
-                    task.is_completed && 'opacity-60'
+                    'flex items-center gap-3 p-3 rounded-xl transition-all duration-200',
+                    'hover:bg-secondary/60 group',
+                    task.is_completed && 'opacity-50'
                   )}
                 >
                   {hasSubtasks ? (
                     <button
                       onClick={() => toggleTaskExpand(task.id)}
-                      className="p-0.5 hover:bg-secondary rounded"
+                      className="p-0.5 hover:bg-secondary rounded transition-colors"
                     >
                       {isTaskExpanded ? (
                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
@@ -183,13 +234,18 @@ export function CategoryCard({
                   />
                   <span
                     className={cn(
-                      'flex-1 text-sm',
+                      'flex-1 text-sm font-medium',
                       task.is_completed && 'line-through text-muted-foreground'
                     )}
                   >
                     {task.title}
                   </span>
-                  <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                  {subtaskProgress && (
+                    <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+                      {subtaskProgress}
+                    </span>
+                  )}
+                  <div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 transition-opacity">
                     <Button
                       variant="ghost"
                       size="icon"
@@ -201,7 +257,7 @@ export function CategoryCard({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-destructive hover:text-destructive"
+                      className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={() => onDeleteTask(task.id)}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -214,9 +270,9 @@ export function CategoryCard({
                   <div
                     key={subtask.id}
                     className={cn(
-                      'flex items-center gap-3 p-2 pl-12 rounded-lg transition-all duration-200',
-                      'hover:bg-secondary/30 group',
-                      subtask.is_completed && 'opacity-60'
+                      'flex items-center gap-3 p-2.5 pl-14 rounded-xl transition-all duration-200',
+                      'hover:bg-secondary/40 group',
+                      subtask.is_completed && 'opacity-50'
                     )}
                   >
                     <Checkbox
@@ -237,7 +293,7 @@ export function CategoryCard({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive"
+                      className="h-7 w-7 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive hover:bg-destructive/10 transition-opacity"
                       onClick={() => onDeleteTask(subtask.id)}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -247,7 +303,7 @@ export function CategoryCard({
 
                 {/* Add subtask input */}
                 {addingSubtaskFor === task.id && (
-                  <div className="flex items-center gap-2 pl-12 pr-2">
+                  <div className="flex items-center gap-2 pl-14 pr-2 py-1">
                     <Input
                       placeholder="Add subtask..."
                       value={newSubtaskTitle}
@@ -256,12 +312,13 @@ export function CategoryCard({
                         if (e.key === 'Enter') handleAddSubtask(task.id);
                         if (e.key === 'Escape') setAddingSubtaskFor(null);
                       }}
-                      className="h-9 text-sm"
+                      className="h-9 text-sm bg-secondary/50 border-0"
                       autoFocus
                     />
                     <Button
                       size="sm"
                       onClick={() => handleAddSubtask(task.id)}
+                      className="shrink-0"
                     >
                       Add
                     </Button>
@@ -282,10 +339,10 @@ export function CategoryCard({
                   if (e.key === 'Enter') handleAddTask();
                   if (e.key === 'Escape') setShowAddTask(false);
                 }}
-                className="h-9"
+                className="h-10 bg-secondary/50 border-0"
                 autoFocus
               />
-              <Button size="sm" onClick={handleAddTask}>
+              <Button onClick={handleAddTask} className="shrink-0">
                 Add
               </Button>
             </div>
@@ -293,7 +350,7 @@ export function CategoryCard({
             <Button
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-muted-foreground hover:text-foreground"
+              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/60 mt-2"
               onClick={() => setShowAddTask(true)}
             >
               <Plus className="w-4 h-4 mr-2" />
