@@ -55,21 +55,21 @@ export function AddCategoryDialog({ onAdd }: AddCategoryDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
+        <Button className="gap-1.5 sm:gap-2 h-9 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm">
           <Plus className="w-4 h-4" />
-          Add Category
+          <span className="hidden xs:inline">Add</span> Category
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-md mx-auto rounded-xl">
         <DialogHeader>
-          <DialogTitle>Create new category</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Create new category</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Organize your tasks into categories for better management.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Category name</Label>
+            <Label htmlFor="name" className="text-sm">Category name</Label>
             <Input
               id="name"
               placeholder="e.g., Development, Health, Finance"
@@ -80,7 +80,7 @@ export function AddCategoryDialog({ onAdd }: AddCategoryDialogProps) {
           </div>
 
           <div className="space-y-3">
-            <Label>Icon</Label>
+            <Label className="text-sm">Icon</Label>
             <div className="flex gap-2 flex-wrap">
               {ICONS.map(({ name: iconName, Icon }) => (
                 <button
@@ -88,7 +88,7 @@ export function AddCategoryDialog({ onAdd }: AddCategoryDialogProps) {
                   type="button"
                   onClick={() => setSelectedIcon(iconName)}
                   className={cn(
-                    'p-3 rounded-lg transition-all duration-200 border-2',
+                    'p-2.5 sm:p-3 rounded-lg transition-all duration-200 border-2 touch-manipulation',
                     selectedIcon === iconName
                       ? 'border-primary bg-primary/10'
                       : 'border-border hover:border-primary/50'
@@ -106,7 +106,7 @@ export function AddCategoryDialog({ onAdd }: AddCategoryDialogProps) {
           </div>
 
           <div className="space-y-3">
-            <Label>Color</Label>
+            <Label className="text-sm">Color</Label>
             <div className="flex gap-2 flex-wrap">
               {COLORS.map((color) => (
                 <button
@@ -114,7 +114,7 @@ export function AddCategoryDialog({ onAdd }: AddCategoryDialogProps) {
                   type="button"
                   onClick={() => setSelectedColor(color.value)}
                   className={cn(
-                    'w-10 h-10 rounded-full transition-all duration-200',
+                    'w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all duration-200 touch-manipulation',
                     'ring-offset-2 ring-offset-background',
                     selectedColor === color.value && 'ring-2 ring-primary'
                   )}
@@ -128,12 +128,12 @@ export function AddCategoryDialog({ onAdd }: AddCategoryDialogProps) {
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
+              className="flex-1 h-11"
               onClick={() => setOpen(false)}
             >
               Cancel
             </Button>
-            <Button type="submit" className="flex-1">
+            <Button type="submit" className="flex-1 h-11">
               Create
             </Button>
           </div>
