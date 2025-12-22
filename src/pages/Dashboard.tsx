@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useCategories } from '@/hooks/useCategories';
@@ -8,6 +8,7 @@ import { CategoryCard } from '@/components/CategoryCard';
 import { AddCategoryDialog } from '@/components/AddCategoryDialog';
 import { EmptyState } from '@/components/EmptyState';
 import { StatsBar } from '@/components/StatsBar';
+import { Footer } from '@/components/Footer';
 import { Loader2 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -15,7 +16,6 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { categories, loading: categoriesLoading, createCategory, deleteCategory } = useCategories();
   const { tasks, getSubtasks, loading: tasksLoading, createTask, toggleComplete, deleteTask } = useTasks();
-  const addCategoryRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -26,7 +26,10 @@ export default function Dashboard() {
   if (authLoading || categoriesLoading || tasksLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading your tasks...</p>
+        </div>
       </div>
     );
   }
@@ -44,13 +47,21 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Gradient background effect */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--primary) / 0.12), transparent)'
+        }}
+      />
+      
       <Header />
       
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <main className="container mx-auto px-4 py-8 max-w-5xl flex-1 relative">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 animate-fade-in">
           <div>
-            <h2 className="text-3xl font-bold text-foreground">My Tasks</h2>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">My Tasks</h2>
             <p className="text-muted-foreground mt-1">
               Organize and track your personal goals
             </p>
@@ -61,13 +72,12 @@ export default function Dashboard() {
         </div>
 
         {categories.length > 0 && (
-          <StatsBar tasks={tasks} categories={categories} />
+          <StatsBar tasks={tasks} categories={categories} getSubtasks={getSubtasks} />
         )}
 
         {categories.length === 0 ? (
           <EmptyState
             onAddCategory={() => {
-              // Trigger the dialog
               const dialog = document.querySelector('[data-radix-collection-item]');
               if (dialog) (dialog as HTMLButtonElement).click();
             }}
@@ -77,7 +87,7 @@ export default function Dashboard() {
             {categories.map((category, index) => (
               <div
                 key={category.id}
-                style={{ animationDelay: `${index * 100}ms` }}
+                style={{ animationDelay: `${index * 80}ms` }}
               >
                 <CategoryCard
                   category={category}
@@ -93,6 +103,8 @@ export default function Dashboard() {
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   );
 }
