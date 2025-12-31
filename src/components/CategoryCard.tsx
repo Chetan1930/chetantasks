@@ -155,31 +155,38 @@ export function CategoryCard({
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-secondary">
-                  <MoreHorizontal className="w-4 h-4" />
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-9 w-9 sm:h-8 sm:w-8 rounded-lg hover:bg-secondary/80 active:scale-95 transition-all touch-manipulation"
+                >
+                  <MoreHorizontal className="w-4 h-4 sm:w-4 sm:h-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="glass-card">
+              <DropdownMenuContent 
+                align="end" 
+                className="min-w-[160px] sm:min-w-[180px] bg-background/95 backdrop-blur-xl border border-border/50 shadow-xl rounded-xl p-1.5 z-50"
+              >
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleteCategory(category.id);
                   }}
-                  className="text-destructive focus:text-destructive"
+                  className="flex items-center gap-3 px-3 py-2.5 sm:py-2 rounded-lg text-destructive hover:text-destructive focus:text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors touch-manipulation"
                 >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete category
+                  <Trash2 className="w-4 h-4" />
+                  <span className="font-medium text-sm">Delete Category</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <div className="p-1">
+            <div className="p-1.5 sm:p-1">
               {isExpanded ? (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                <ChevronRight className="w-4 h-4 text-muted-foreground transition-transform duration-200" />
               )}
             </div>
           </div>
