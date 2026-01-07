@@ -14,8 +14,8 @@ import { Loader2 } from 'lucide-react';
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const { categories, loading: categoriesLoading, createCategory, deleteCategory } = useCategories();
-  const { tasks, getSubtasks, loading: tasksLoading, createTask, toggleComplete, deleteTask } = useTasks();
+  const { categories, loading: categoriesLoading, createCategory, updateCategory, deleteCategory } = useCategories();
+  const { tasks, getSubtasks, loading: tasksLoading, createTask, updateTask, toggleComplete, deleteTask } = useTasks();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -99,6 +99,8 @@ export default function Dashboard() {
                   onToggleComplete={toggleComplete}
                   onDeleteTask={deleteTask}
                   onDeleteCategory={deleteCategory}
+                  onUpdateCategory={updateCategory}
+                  onUpdateTask={updateTask}
                 />
               </div>
             ))}
